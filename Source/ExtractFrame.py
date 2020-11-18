@@ -1,6 +1,5 @@
 import cv2
 import os
-
 #Point to video address
 #Ponit a varibale to separated video folder in Desktop
 os.chdir('/home/hungdoan7/Desktop/Video')
