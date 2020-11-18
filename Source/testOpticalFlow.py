@@ -24,6 +24,10 @@ def processVideo():
             # Change image to gray image in which each pixel has a value between 0 and 255
             # And also set the next variable to hold the next image
             next = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+
+            # Calculating dense optical flow by Farneback method
+            # The output is a array have 3 dimension, the 2 first dimensions organize as the structure of pixels in an image
+            # The third dimension holding 2 value stands for magnitude and direction when compute optical flow of a pixel compare to itself in previous frame
             flow = cv2.calcOpticalFlowFarneback(prvs, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
 
             # Computes the magnitude and angle of the 2D vectors
