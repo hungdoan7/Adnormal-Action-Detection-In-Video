@@ -18,10 +18,10 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
 
     # Initial a 3 dimension array which actual is a 2d array has the size fit the blocks size and each its element is a smaller 1 dimension array
     # holding 2 element use to hold magnitude of each pixel and θ represents the direction in which the each pixel has moved relative to the
-    # corresponding  block in the previous frames.
+    # corresponding block in the previous frame
     opFlowOfBlocks = np.zeros((xBlockSize,yBlockSize,2))
 
-    # Select each index and value from 2d array holding magnitude of all the pixel in an image
+    # Select each index and value from 2d array holding magnitude of all the pixel in a frame
     for index,value in np.ndenumerate(mag):
         # Identify that the current pixel is related to what block
         # through out calculating the index of corresponding block in opFlowOfBlocks array
@@ -36,6 +36,7 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
     centreOfBlocks = np.zeros((xBlockSize,yBlockSize,2))
     # Select each index and value from 2d array holding magnitude of all the pixel in a block
     for index,value in np.ndenumerate(opFlowOfBlocks):
+
         # Calculate the average value of current optical flow value element (magnitude or direction) of current block
         opFlowOfBlocks[index[0]][index[1]][index[2]] = float(value)/(noOfRowInBlock*noOfColInBlock)
         val = opFlowOfBlocks[index[0]][index[1]][index[2]]
@@ -58,11 +59,9 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
                 else:
                     k = int(round(a2/45))
             opFlowOfBlocks[index[0]][index[1]][index[2]] = k
-            theta = val
         else:
-            # Magnitude attribute
-            # Using this val above variable to calculate the value of magnitude and angle in direction element for current centreOfBlocks array element
-            r = val
+            # Calculate the centre pixel of each block
+            # x, y is the index of the centre pixel in the 2D array which structure a frame
             x = ((index[0] + 1)*noOfRowInBlock)-(noOfRowInBlock/2)
             y = ((index[1] + 1)*noOfColInBlock)-(noOfColInBlock/2)
             centreOfBlocks[index[0]][index[1]][0] = x
