@@ -42,10 +42,9 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
         val = opFlowOfBlocks[index[0]][index[1]][index[2]]
 
         # Angle attribute
-        # Using this val above variable to calculate the real value of angle in direction element of a block
+        # Using this val above variable to calculate the index which lead to the direction of one of 8 blocks around each block
         if(index[2] == 1):
             angInDeg = math.degrees(val)
-            print(angInDeg)
             if(angInDeg > 337.5):
                 k = 0
             else:
@@ -61,6 +60,7 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
             opFlowOfBlocks[index[0]][index[1]][index[2]] = k
         else:
             # Calculate the centre pixel of each block
+            # This index of the centre of each block will be used to calculate Euclidean Dist between it and another block
             # x, y is the index of the centre pixel in the 2D array which structure a frame
             x = ((index[0] + 1)*noOfRowInBlock)-(noOfRowInBlock/2)
             y = ((index[1] + 1)*noOfColInBlock)-(noOfColInBlock/2)
