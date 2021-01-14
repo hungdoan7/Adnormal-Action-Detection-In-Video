@@ -2,11 +2,13 @@ import motionInfuenceGenerator as mig
 import createMegaBlocks as cmb
 import numpy as np
 import cv2
+
 def square(a):
     return (a**2)
 
 def diff(l):
     return (l[0] - l[1])
+
 def showUnusualActivities(unusual, vid, noOfRows, noOfCols, n):
    
     unusualFrames = unusual.keys()
@@ -116,7 +118,7 @@ def test_video(vid):
         calls all methods to test the given video
        
     '''
-    print "Test video ", vid
+    print ("Test video ", vid)
     MotionInfOfFrames, rows, cols = mig.getMotionInfuenceMap(vid)
     #np.save("videos\scene1\rows_cols_set1_p1_test_20-20_k5.npy",np.array([rows,cols]))
     #######print "Motion Inf Map ", len(MotionInfOfFrames)
@@ -138,4 +140,4 @@ if __name__ == '__main__':
     testSet = [r"videos\scene2\2_test1.avi"]
     for video in testSet:
         test_video(video)
-    print "Done"
+    print ("Done")

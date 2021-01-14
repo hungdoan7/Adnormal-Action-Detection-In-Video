@@ -7,7 +7,7 @@ import itertools
 
 
 def createMegaBlocks(motionInfoOfFrames,noOfRows,noOfCols):
-   
+
     n = 2
     megaBlockMotInfVal = np.zeros(((noOfRows/n),(noOfCols/n),len(motionInfoOfFrames),8))
     
@@ -17,8 +17,8 @@ def createMegaBlocks(motionInfoOfFrames,noOfRows,noOfCols):
         
         for index,val in np.ndenumerate(frame[...,0]):
             
-            temp = [list(megaBlockMotInfVal[index[0]/n][index[1]/n][frameCounter]),list(frame[index[0]][index[1]])]
-           
+            temp = [list(megaBlockMotInfVal[index[0]/n][index[1]/n][frameCounter]), list(frame[index[0]][index[1]])]
+
             megaBlockMotInfVal[index[0]/n][index[1]/n][frameCounter] = np.array(map(sum, zip(*temp)))
 
         frameCounter += 1
@@ -31,6 +31,7 @@ def kmeans(megaBlockMotInfVal):
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     flags = cv2.KMEANS_RANDOM_CENTERS
     codewords = np.zeros((len(megaBlockMotInfVal),len(megaBlockMotInfVal[0]),cluster_n,8))
+
     #codewords = []
     #print("Mega blocks ",megaBlockMotInfVal)
     for row in range(len(megaBlockMotInfVal)):

@@ -26,7 +26,7 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
         # Identify that the current pixel is related to what block
         # through out calculating the index of corresponding block in opFlowOfBlocks array
         xBlockIndex = int (index[0]/noOfRowInBlock)
-        yBlockIndex = int (index[0]/noOfRowInBlock)
+        yBlockIndex = int (index[1]/noOfColInBlock)
 
         # Sum the magnitude and angle of direction in optical value in current pixel to its block it belong
         opFlowOfBlocks[xBlockIndex][yBlockIndex][0] += mag[index[0]][index[1]]
@@ -58,6 +58,7 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
                 else:
                     k = int(round(a2/45))
             opFlowOfBlocks[index[0]][index[1]][index[2]] = k
+            print(opFlowOfBlocks[index[0]][index[1]][index[2]])
         else:
             # Calculate the centre pixel of each block
             # This index of the centre of each block will be used to calculate Euclidean Dist between it and another block

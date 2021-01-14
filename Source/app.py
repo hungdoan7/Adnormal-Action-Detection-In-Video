@@ -5,7 +5,7 @@ import motionInfuenceGenerator
 
 def processVideo():
     # Set the directory which have videos we need
-    os.chdir('/home/hungdoan7/Desktop/Video')
+    os.chdir(r'D:/Video')
     for file in os.listdir():
         cap = cv2.VideoCapture("./" + file)
         # ret = a boolean return value from getting
@@ -38,11 +38,13 @@ def processVideo():
             opFlowOfBlocks,noOfRowInBlock,noOfColInBlock,blockSize,centreOfBlocks,xBlockSize,yBlockSize = roi.calcOptFlowOfBlocks(mag,ang,next)
             motionInfVal = motionInfuenceGenerator.motionInMapGenerator(opFlowOfBlocks,blockSize,centreOfBlocks,xBlockSize,yBlockSize)
             motionInfOfFrames.append(motionInfVal)
-            print(motionInfVal.shape)
+
             # Update or in other words is setting previous image equal current image
             prvs = next
-        return motionInfOfFrames,xBlockSize,yBlockSize
 
+            #
+
+        return motionInfOfFrames, xBlockSize, yBlockSize
 
 #  Just consider this module as a starting point of this time and below is the function calling
 motionInfVal,xBlockSize,yBlockSize = processVideo()
