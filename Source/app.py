@@ -43,9 +43,8 @@ def processVideo():
             prvs = next
 
             #
-
         return motionInfOfFrames, xBlockSize, yBlockSize
 
-#  Just consider this module as a starting point of this time and below is the function calling
-motionInfVal,xBlockSize,yBlockSize = processVideo()
-print(motionInfVal.shape)
+# Just consider this module as a starting point of this time and below is the function calling
+# motionInfVal,xBlockSize,yBlockSize = processVideo()
+# print(motionInfVal.shape)

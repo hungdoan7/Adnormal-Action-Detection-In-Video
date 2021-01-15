@@ -58,7 +58,6 @@ def calcOptFlowOfBlocks(mag, angle, grayImg):
                 else:
                     k = int(round(a2/45))
             opFlowOfBlocks[index[0]][index[1]][index[2]] = k
-            print(opFlowOfBlocks[index[0]][index[1]][index[2]])
         else:
             # Calculate the centre pixel of each block
             # This index of the centre of each block will be used to calculate Euclidean Dist between it and another block

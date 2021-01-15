@@ -94,24 +94,6 @@ def getMotionInfuenceMap(vid):
     motionInfOfFrames = []
     count = 0
     while 1:
-        '''
-        #if(count <= 475 or (count > 623 and count <= 1300)):
-        if(count < 475):
-            ret, frame2 = cap.read()
-            prvs = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
-            count += 1
-            continue
-        '''
-
-        # if((count < 1451 and count <= 623)):
-        '''
-        if(count < 475):    
-            ret, frame2 = cap.read()
-            prvs = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
-            count += 1
-            continue
-        '''
-        print(count)
         ret, frame2 = cap.read()
         if (ret == False):
             break
@@ -129,4 +111,5 @@ def getMotionInfuenceMap(vid):
         # if(count == 622):
         #    break
         count += 1
+        print(count)
     return motionInfOfFrames, xBlockSize, yBlockSize
