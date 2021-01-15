@@ -10,7 +10,7 @@ def diff(l):
     return (l[0] - l[1])
 
 def showUnusualActivities(unusual, vid, noOfRows, noOfCols, n):
-   
+
     unusualFrames = unusual.keys()
     unusualFrames.sort()
     print(unusualFrames)
@@ -61,6 +61,7 @@ def showUnusualActivities(unusual, vid, noOfRows, noOfCols, n):
             break
         '''
         count += 1
+
 def constructMinDistMatrix(megaBlockMotInfVal,codewords, noOfRows, noOfCols, vid):
     #threshold = 2.1874939946e-21
     #threshold = 0.00196777849633
@@ -86,22 +87,24 @@ def constructMinDistMatrix(megaBlockMotInfVal,codewords, noOfRows, noOfCols, vid
     
     #threshold = 0.0012675861679
     #threshold = 1.01827939172e-05
+
     n = 2
-    minDistMatrix = np.zeros((len(megaBlockMotInfVal[0][0]),(noOfRows/n),(noOfCols/n)))
+    minDistMatrix = np.zeros((noOfRows/n), (noOfCols/n)), (len(megaBlockMotInfVal[0][0]))
     for index,val in np.ndenumerate(megaBlockMotInfVal[...,0]):
         eucledianDist = []
         for codeword in codewords[index[0]][index[1]]:
             #print("haha")
             temp = [list(megaBlockMotInfVal[index[0]][index[1]][index[2]]),list(codeword)]
             #print("Temp",temp)
-            dist = np.linalg.norm(megaBlockMotInfVal[index[0]][index[1]][index[2]]-codeword)
+            # dist = np.linalg.norm(megaBlockMotInfVal[index[0]][index[1]][index[2]]-codeword)
             #print("Dist ",dist)
             eucDist = (sum(map(square,map(diff,zip(*temp)))))**0.5
             #eucDist = (sum(map(square,map(diff,zip(*temp)))))
             eucledianDist.append(eucDist)
             #print("My calc ",sum(map(square,map(diff,zip(*temp)))))
         #print(min(eucledianDist))
-        minDistMatrix[index[2]][index[0]][index[1]] = min(eucledianDist)
+        minDistMatrix[index[0]][index[1][index[2]]] = min(eucledianDist)
+
     unusual = {}
     for i in range(len(minDistMatrix)):
         if(np.amax(minDistMatrix[i]) > threshold):
@@ -114,30 +117,20 @@ def constructMinDistMatrix(megaBlockMotInfVal,codewords, noOfRows, noOfCols, vid
     showUnusualActivities(unusual, vid, noOfRows, noOfCols, n)
     
 def test_video(vid):
-    '''
-        calls all methods to test the given video
-       
-    '''
+
     print ("Test video ", vid)
     MotionInfOfFrames, rows, cols = mig.getMotionInfuenceMap(vid)
-    #np.save("videos\scene1\rows_cols_set1_p1_test_20-20_k5.npy",np.array([rows,cols]))
-    #######print "Motion Inf Map ", len(MotionInfOfFrames)
-    #numpy.save("MotionInfluenceMaps", np.array(MotionInfOfFrames), allow_pickle=True, fix_imports=True)
+
     megaBlockMotInfVal = cmb.createMegaBlocks(MotionInfOfFrames, rows, cols)
-    ######rows, cols = np.load("rows_cols__set3_p2_test_40_k3.npy")
-    #print(megaBlockMotInfVal)
+
     np.save("videos\scene1\megaBlockMotInfVal_set1_p1_test_20-20_k5.npy",megaBlockMotInfVal)
-    ######megaBlockMotInfVal = np.load("megaBlockMotInfVal_set3_p2_train_40_k7.npy")
+
     codewords = np.load("videos\scene1\codewords_set2_p1_train_20-20_k5.npy")
     print("codewords",codewords)
-    listOfUnusualFrames = constructMinDistMatrix(megaBlockMotInfVal,codewords,rows, cols, vid)
-    return
+    constructMinDistMatrix(megaBlockMotInfVal,codewords,rows, cols, vid)
     
 if __name__ == '__main__':
-    '''
-        defines training set and calls trainFromVideo for every vid
-    '''
     testSet = [r"videos\scene2\2_test1.avi"]
     for video in testSet:
         test_video(video)
-    print ("Done")
+    print("Trainning Done")

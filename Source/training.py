@@ -9,7 +9,7 @@ def train_from_video(vid):
     print ("Training From ", vid)
     MotionInfOfFrames, rows, cols = mig.getMotionInfuenceMap(vid)
     print ("Motion Inf Map", len(MotionInfOfFrames))
-    #numpy.save("MotionInfluenceMaps", np.array(MotionInfOfFrames), allow_pickle=True, fix_imports=True)
+
     megaBlockMotInfVal = cmb.createMegaBlocks(MotionInfOfFrames, rows, cols)
     np.save("D:/saved/test/megaBlockMotInfVal_test.npy", megaBlockMotInfVal)
     print(np.amax(megaBlockMotInfVal))
@@ -25,11 +25,13 @@ def train_from_video(vid):
 #     for video in trainingSet:
 #         train_from_video(video)
 #     print("Done")
-#
+
 # if __name__ == "__main__":
 #     main()
 
+
+# Just consider this module as a starting point of this time and below is the function calling
 trainingSet = [r"D:/Video/test.mp4"]
 for video in trainingSet:
     train_from_video(video)
-print("Done")
+print("Trainning Done")

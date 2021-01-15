@@ -4,13 +4,17 @@ import opticalFlowOfBlocks as roi
 import motionInfuenceGenerator
 
 def processVideo():
+
     # Set the directory which have videos we need
     os.chdir(r'D:/Video')
+
     for file in os.listdir():
+
         cap = cv2.VideoCapture("./" + file)
         # ret = a boolean return value from getting
         # the frame, frame = the current frame being
         # projected in the video
+
         ret, frame1 = cap.read()
         if (ret == False):
             break
@@ -19,6 +23,7 @@ def processVideo():
         prvs = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
         motionInfOfFrames = []
         while 1:
+
             ret, frame2 = cap.read()
             if (ret == False):
                 break
@@ -42,9 +47,6 @@ def processVideo():
             # Update or in other words is setting previous image equal current image
             prvs = next
 
-            #
         return motionInfOfFrames, xBlockSize, yBlockSize
 
-# Just consider this module as a starting point of this time and below is the function calling
-# motionInfVal,xBlockSize,yBlockSize = processVideo()
-# print(motionInfVal.shape)
+

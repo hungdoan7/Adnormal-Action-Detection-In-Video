@@ -21,27 +21,29 @@ def createMegaBlocks(motionInfoOfFrames,noOfRows,noOfCols):
             temp = [list(megaBlockMotInfVal[indexOfMegaBlockRow][indexOfMegaBlockCol][frameCounter]), list(frame[index[0]][index[1]])]
 
             megaBlockMotInfVal[indexOfMegaBlockRow][indexOfMegaBlockCol][frameCounter] = np.array(list(map(sum, zip(*temp))))
+
         frameCounter += 1
 
     return megaBlockMotInfVal
 
 def kmeans(megaBlockMotInfVal):
-    #k-means
+
     cluster_n = 5
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     flags = cv2.KMEANS_RANDOM_CENTERS
-    codewords = np.zeros((len(megaBlockMotInfVal),len(megaBlockMotInfVal[0]),cluster_n,8))
 
-    #codewords = []
-    #print("Mega blocks ",megaBlockMotInfVal)
-    for row in range(len(megaBlockMotInfVal)):
-        for col in range(len(megaBlockMotInfVal[row])):
-            #print("megaBlockMotInfVal ",(row,col),"/n/n",megaBlockMotInfVal[row][col])
+    noOfMegaBlockRows = len(megaBlockMotInfVal)
+    noOfMegaBlockCols = len(megaBlockMotInfVal[0])
+
+    codewords = np.zeros(noOfMegaBlockRows, noOfMegaBlockCols, cluster_n, 8)
+
+    print("print out len of array", len(megaBlockMotInfVal))
+    print("print out len of array[0]", len(megaBlockMotInfVal[0]))
+
+    for row in range(noOfMegaBlockRows):
+        for col in range(noOfMegaBlockCols):
             
-            ret, labels, cw = cv2.kmeans(np.float32(megaBlockMotInfVal[row][col]), cluster_n, None, criteria,10,flags)
-            #print(ret)
-            #if(ret == False):
-            #    print("K-means failed. Please try again")
+            compactness, labels, cw = cv2.kmeans(np.float32(megaBlockMotInfVal[row][col]), cluster_n, None, criteria, 10, flags)
             codewords[row][col] = cw
             
     return(codewords)

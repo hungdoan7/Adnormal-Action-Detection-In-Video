@@ -83,6 +83,7 @@ def motionInMapGenerator(opFlowOfBlocks,blockSize,centreOfBlocks,xBlockSize,yBlo
 
 
 def getMotionInfuenceMap(vid):
+
     global frameNo
 
     frameNo = 0
