@@ -1,6 +1,6 @@
 import numpy as np
 import motionInfuenceGenerator as mig
-import createMegaBlocks as cmb
+import megaBlocksGenerator as cmb
 
 def reject_outliers(data, m=2):
     return data[abs(data - np.mean(data)) < m * np.std(data)]
@@ -11,12 +11,12 @@ def train_from_video(vid):
     print ("Motion Inf Map", len(MotionInfOfFrames))
 
     megaBlockMotInfVal = cmb.createMegaBlocks(MotionInfOfFrames, rows, cols)
-    np.save("D:/saved/test/megaBlockMotInfVal_test.npy", megaBlockMotInfVal)
+    np.save("D:/saved/train/megaBlockMotInfVal_test.npy", megaBlockMotInfVal)
     print(np.amax(megaBlockMotInfVal))
     print(np.amax(reject_outliers(megaBlockMotInfVal)))
     
     codewords = cmb.kmeans(megaBlockMotInfVal)
-    np.save("D:/saved/test/codewords_test.npy",codewords)
+    np.save("D:/saved/train/codewords_test.npy",codewords)
     print(codewords)
     return
 

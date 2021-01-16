@@ -1,7 +1,7 @@
 import math
 import numpy as np
 import cv2
-import opticalFlowOfBlocks as roi
+import blocksOpticalFlowGenerator as roi
 
 def getThresholdDistance(mag, blockSize):
     return mag*blockSize

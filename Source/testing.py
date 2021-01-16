@@ -1,5 +1,5 @@
 import motionInfuenceGenerator as mig
-import createMegaBlocks as cmb
+import megaBlocksGenerator as cmb
 import numpy as np
 import cv2
 
@@ -12,7 +12,7 @@ def diff(l):
 def showUnusualActivities(unusual, vid, noOfRows, noOfCols, n):
 
     unusualFrames = unusual.keys()
-    unusualFrames.sort()
+    unusualFrames = sorted(unusualFrames)
     print(unusualFrames)
     cap = cv2.VideoCapture(vid)
     ret, frame = cap.read()
@@ -89,7 +89,7 @@ def constructMinDistMatrix(megaBlockMotInfVal,codewords, noOfRows, noOfCols, vid
     #threshold = 1.01827939172e-05
 
     n = 2
-    minDistMatrix = np.zeros((noOfRows/n), (noOfCols/n)), (len(megaBlockMotInfVal[0][0]))
+    minDistMatrix = np.zeros((int(noOfRows/n), int(noOfCols/n), (len(megaBlockMotInfVal[0][0]))))
     for index,val in np.ndenumerate(megaBlockMotInfVal[...,0]):
         eucledianDist = []
         for codeword in codewords[index[0]][index[1]]:
@@ -103,7 +103,7 @@ def constructMinDistMatrix(megaBlockMotInfVal,codewords, noOfRows, noOfCols, vid
             eucledianDist.append(eucDist)
             #print("My calc ",sum(map(square,map(diff,zip(*temp)))))
         #print(min(eucledianDist))
-        minDistMatrix[index[0]][index[1][index[2]]] = min(eucledianDist)
+        minDistMatrix[index[0]][index[1]][index[2]] = min(eucledianDist)
 
     unusual = {}
     for i in range(len(minDistMatrix)):
@@ -123,14 +123,33 @@ def test_video(vid):
 
     megaBlockMotInfVal = cmb.createMegaBlocks(MotionInfOfFrames, rows, cols)
 
-    np.save("videos\scene1\megaBlockMotInfVal_set1_p1_test_20-20_k5.npy",megaBlockMotInfVal)
+    np.save("D:/saved/test/megaBlockMotInfVal_real_test.npy",megaBlockMotInfVal)
 
-    codewords = np.load("videos\scene1\codewords_set2_p1_train_20-20_k5.npy")
+    codewords = np.load("D:/saved/train/codewords_test.npy")
     print("codewords",codewords)
     constructMinDistMatrix(megaBlockMotInfVal,codewords,rows, cols, vid)
-    
-if __name__ == '__main__':
-    testSet = [r"videos\scene2\2_test1.avi"]
-    for video in testSet:
-        test_video(video)
-    print("Trainning Done")
+
+def test_video_2(vid):
+
+    print ("Test video ", vid)
+    rows=16
+    cols=12
+
+    megaBlockMotInfVal = np.load("D:/saved/test/megaBlockMotInfVal_real_test.npy")
+
+    codewords = np.load("D:/saved/train/codewords_test.npy")
+    print("codewords",codewords)
+    constructMinDistMatrix(megaBlockMotInfVal,codewords,rows, cols, vid)
+
+
+
+# if __name__ == '__main__':
+#     testSet = [r"D:/video/test.mp4"]
+#     for video in testSet:
+#         test_video(video)
+#     print("Trainning Done")
+
+testSet = [r"D:/video/test.mp4"]
+for video in testSet:
+    test_video(video)
+print("Trainning Done")
