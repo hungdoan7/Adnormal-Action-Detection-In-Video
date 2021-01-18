@@ -14,11 +14,14 @@ def showUnusualActivities(unusual, vid, noOfRows, noOfCols, n):
     unusualFrames = unusual.keys()
     unusualFrames = sorted(unusualFrames)
     print(unusualFrames)
+    print(len(unusualFrames))
+
     cap = cv2.VideoCapture(vid)
     ret, frame = cap.read()
     rows, cols = frame.shape[0], frame.shape[1]
     rowLength = rows/(noOfRows/n)
     colLength = cols/(noOfCols/n)
+
     print("Block Size ",(rowLength,colLength))
     count = 0
     screen_res = 980, 520
@@ -33,86 +36,58 @@ def showUnusualActivities(unusual, vid, noOfRows, noOfCols, n):
     while 1:
         print(count)
         ret, uFrame = cap.read()
-        '''
-        if(count <= 475):
-            
-            count += 1
-            continue
-        
-        elif((count-475) in unusualFrames):
-        '''
+        if (ret == False):
+            break
         if(count in unusualFrames):
-            if (ret == False):
-                break
             for blockNum in unusual[count]:
                 print(blockNum)
-                x1 = blockNum[1] * rowLength
-                y1 = blockNum[0] * colLength
-                x2 = (blockNum[1]+1) * rowLength
-                y2 = (blockNum[0]+1) * colLength
+                x1 = int(blockNum[1] * rowLength)
+                y1 = int(blockNum[0] * colLength)
+                x2 = int((blockNum[1]+1) * rowLength)
+                y2 = int((blockNum[0]+1) * colLength)
                 cv2.rectangle(uFrame,(x1,y1),(x2,y2),(0,0,255),1)
             print("Unusual frame number ",str(count))
         cv2.imshow('Unusual Frame',uFrame)
-            
-        cv2.waitKey(0)
-            #cv2.destroyAllWindows()
-        '''
-        if(count == 622):
+
+        if cv2.waitKey(30) & 0xFF == ord('q'):
             break
-        '''
         count += 1
+    cap.release()
+    cv2.destroyAllWindows()
+
 
 def constructMinDistMatrix(megaBlockMotInfVal,codewords, noOfRows, noOfCols, vid):
-    #threshold = 2.1874939946e-21
-    #threshold = 0.00196777849633
-    #threshold = 9.3985643749758953e-06
-    #threshold = 0.439167467697
-    #threshold = 0.021305195096797892
-    #threshold = 3.35845489394e-07
-    #threshold = 1.6586380629e-08
-    #threshold = 0.000212282134156
-    #threshold = 4.63266766923e-14
-    #threshold = 7.29868038369e-06
-    #threshold = 8.82926005091e-05
-    #threshold = 7.39718222289e-14
-    #threshold = 8.82926005091e-05
-    #threshold = 0.0080168593265873295
-    #threshold = 0.00511863986892
-    #------------------------------------#
     threshold = 5.83682407063e-05
-    #threshold = 3.37029584538e-07
-    #------------------------------------#
-    #threshold = 2.63426664698e-06
-    #threshold = 1.91130257263e-08
-    
-    #threshold = 0.0012675861679
-    #threshold = 1.01827939172e-05
-
     n = 2
-    minDistMatrix = np.zeros((int(noOfRows/n), int(noOfCols/n), (len(megaBlockMotInfVal[0][0]))))
-    for index,val in np.ndenumerate(megaBlockMotInfVal[...,0]):
+    noMegaBlockRows = int(noOfRows / n)
+    noMegaBlockCols = int(noOfCols / n)
+    minDistMatrix = np.zeros((len(megaBlockMotInfVal[0][0]), noMegaBlockRows, noMegaBlockCols))
+
+    # 6, 8, 101, 8
+    for index, val in np.ndenumerate(megaBlockMotInfVal[..., 0]):
         eucledianDist = []
+
+        # each codewords in 5
         for codeword in codewords[index[0]][index[1]]:
-            #print("haha")
-            temp = [list(megaBlockMotInfVal[index[0]][index[1]][index[2]]),list(codeword)]
-            #print("Temp",temp)
-            # dist = np.linalg.norm(megaBlockMotInfVal[index[0]][index[1]][index[2]]-codeword)
-            #print("Dist ",dist)
-            eucDist = (sum(map(square,map(diff,zip(*temp)))))**0.5
-            #eucDist = (sum(map(square,map(diff,zip(*temp)))))
+
+            temp = [list(megaBlockMotInfVal[index[0]][index[1]][index[2]]), list(codeword)]
+
+            eucDist = (sum(map(square, map(diff, zip(*temp))))) ** 0.5
+
             eucledianDist.append(eucDist)
-            #print("My calc ",sum(map(square,map(diff,zip(*temp)))))
-        #print(min(eucledianDist))
-        minDistMatrix[index[0]][index[1]][index[2]] = min(eucledianDist)
+
+        minDistMatrix[index[2]][index[0]][index[1]] = min(eucledianDist)
 
     unusual = {}
     for i in range(len(minDistMatrix)):
-        if(np.amax(minDistMatrix[i]) > threshold):
+        if (np.amax(minDistMatrix[i]) > threshold):
+
             unusual[i] = []
-            for index,val in np.ndenumerate(minDistMatrix[i]):
-                #print("MotInfVal_train",val)
-                if(val > threshold):
-                        unusual[i].append((index[0],index[1]))
+            for index, val in np.ndenumerate(minDistMatrix[i]):
+
+                if (val > threshold):
+                    unusual[i].append((index[0], index[1]))
+
     print(unusual)
     showUnusualActivities(unusual, vid, noOfRows, noOfCols, n)
     
@@ -123,33 +98,31 @@ def test_video(vid):
 
     megaBlockMotInfVal = cmb.createMegaBlocks(MotionInfOfFrames, rows, cols)
 
-    np.save("D:/saved/test/megaBlockMotInfVal_real_test.npy",megaBlockMotInfVal)
+    np.save("D:/saved/test/megaBlockMotInfVal_test.npy", megaBlockMotInfVal)
 
-    codewords = np.load("D:/saved/train/codewords_test.npy")
-    print("codewords",codewords)
-    constructMinDistMatrix(megaBlockMotInfVal,codewords,rows, cols, vid)
+    codewords = np.load("D:/saved/train/codewords_train.npy")
 
-def test_video_2(vid):
+    constructMinDistMatrix(megaBlockMotInfVal, codewords, rows, cols, vid)
+
+def test_saved_codeword(vid):
 
     print ("Test video ", vid)
-    rows=16
-    cols=12
+    rows=12
+    cols=16
 
-    megaBlockMotInfVal = np.load("D:/saved/test/megaBlockMotInfVal_real_test.npy")
+    megaBlockMotInfVal = np.load("D:/saved/test/megaBlockMotInfVal_test.npy")
 
-    codewords = np.load("D:/saved/train/codewords_test.npy")
-    print("codewords",codewords)
+    codewords = np.load("D:/saved/train/codewords_train.npy")
+
     constructMinDistMatrix(megaBlockMotInfVal,codewords,rows, cols, vid)
 
+def main():
+    testSet = [r"D:/video/test_1.avi"]
+    for video in testSet:
+        test_saved_codeword(video)
+    print("Testing Done")
 
+if __name__ == '__main__':
+    main()
 
-# if __name__ == '__main__':
-#     testSet = [r"D:/video/test.mp4"]
-#     for video in testSet:
-#         test_video(video)
-#     print("Trainning Done")
-
-testSet = [r"D:/video/test.mp4"]
-for video in testSet:
-    test_video(video)
-print("Trainning Done")
+main()
