@@ -1,7 +1,6 @@
 import cv2
 
 # we wanna make a func that help us achieve getting a correct resolution video (in each frame) we need
-
 def spl():
     cap = cv2.VideoCapture(r'Crowd-Activity-All.avi')
 

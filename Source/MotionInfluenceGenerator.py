@@ -1,15 +1,18 @@
 import math
 import numpy as np
 import cv2
-import blocksOpticalFlowGenerator as roi
+import BlocksOpticalFlowGenerator as roi
 
+# Calculate the distance threshold
 def getThresholdDistance(mag, blockSize):
     return mag*blockSize
 
+# Calculate the angle threshold
 def getThresholdAngle(ang):
     tAngle = float(math.pi)/2
     return ang+tAngle, ang-tAngle
 
+# Get the center pixel of one block
 def getCentreOfBlock(blck1Indx,blck2Indx,centreOfBlocks):
 
     # get sequentially the x and y position of centre of 2 blocks to calculate the slope
@@ -26,16 +29,19 @@ def getCentreOfBlock(blck1Indx,blck2Indx,centreOfBlocks):
         slope = float("inf")
     return (x1,y1),(x2,y2),slope
 
+# Calculate the angle between the motion influence block A and the angle
 def calcEuclideanDist(x1,y1,x2,y2):
     dist = float(((x2-x1)**2 + (y2-y1)**2)**0.5)
     return dist
 
+# Calculate the angle between the motion influence block A and the angle
 def angleBtw2Blocks(ang1,ang2):
     if(ang1-ang2 < 0):
         ang1InDeg = math.degrees(ang1)
         ang2InDeg = math.degrees(ang2)
         return math.radians(360 - (ang1InDeg-ang2InDeg))
     return ang1 - ang2
+
 
 def motionInMapGenerator(opFlowOfBlocks,blockSize,centreOfBlocks,xBlockSize,yBlockSize):
     # global frameNo
@@ -85,32 +91,49 @@ def motionInMapGenerator(opFlowOfBlocks,blockSize,centreOfBlocks,xBlockSize,yBlo
 def getMotionInfuenceMap(vid):
 
     global frameNo
-
     frameNo = 0
+
+    # Read the video from specified path
     cap = cv2.VideoCapture(vid)
     ret, frame1 = cap.read()
     rows, cols = frame1.shape[0], frame1.shape[1]
-    print(rows, cols)
+
+    # Read the frame from video
     prvs = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
     motionInfOfFrames = []
     count = 0
     while 1:
+        # ret = a boolean return value from getting
+        # the frame, frame = the current frame being
+        # projected in the video
         ret, frame2 = cap.read()
+
         if (ret == False):
             break
+
+        # Change image to gray image in which each pixel has a value between 0 and 255
+        # And also set the prvs variable to hold the previous image
         next = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+
+        # Calculating dense optical flow by Farneback method
+        # The output is a array have 3 dimension, the 2 first dimensions organize as the structure of pixels in an image
+        # The third dimension holding 2 value stands for magnitude and direction when compute optical flow of a pixel compare to itself in previous frame
         flow = cv2.calcOpticalFlowFarneback(prvs, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
 
+        # Computes the magnitude and angle of the 2D vectors
         mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
 
-        prvs = next
+        # Calculate the optical flow of each block in an image
         opFlowOfBlocks, noOfRowInBlock, noOfColInBlock, blockSize, centreOfBlocks, xBlockSize, yBlockSize = roi.calcOptFlowOfBlocks(
             mag, ang, next)
         motionInfVal = motionInMapGenerator(opFlowOfBlocks, blockSize, centreOfBlocks, xBlockSize, yBlockSize)
+
+        # the array holding all motion influence of blocks in all frames
         motionInfOfFrames.append(motionInfVal)
 
-        # if(count == 622):
-        #    break
+        # Update or in other words is setting previous image equal current image
+        prvs = next
+
         count += 1
         print(count)
     return motionInfOfFrames, xBlockSize, yBlockSize
