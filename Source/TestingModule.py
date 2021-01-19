@@ -132,9 +132,10 @@ def test_saved_codeword(vid):
 def main():
     testSet = [r"D:/video/test_2.mp4"]
     for video in testSet:
-        test_video(video)
+        test_saved_codeword(video)
     print("Testing Done")
 
 if __name__ == '__main__':
     main()
 
+main()

@@ -63,7 +63,6 @@ def motionInMapGenerator(opFlowOfBlocks,blockSize,centreOfBlocks,xBlockSize,yBlo
         posFi, negFi = getThresholdAngle(math.radians(45*(k)))
 
         # We will calculate the influence of this block to the rest blocks
-        # First block is the
         for ind, val in np.ndenumerate(opFlowOfBlocks[...,0]):
             if(index != ind):
 
